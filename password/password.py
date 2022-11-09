@@ -2,6 +2,9 @@ import os
 import hashlib
 import hmac
 
+"""
+ Algorithm used from https://stackoverflow.com/questions/9594125/salt-and-hash-a-password-in-python
+"""
 
 def hash_new_password(password):
     salt = os.urandom(16)
