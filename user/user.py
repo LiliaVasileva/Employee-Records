@@ -33,7 +33,6 @@ class EditUser:
         if value == 'password':
             data[value] = self.password
         elif value == 'salary':
-            print(self.salary)
             data[value] = self.salary
         elif value == 'email':
             data[value] = self.email
