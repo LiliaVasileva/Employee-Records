@@ -2,7 +2,7 @@ import os
 import hashlib
 import hmac
 import json
-from empoloyee_records.password import hash_new_password
+from password.password import hash_new_password
 
 
 class Diary:
@@ -27,7 +27,7 @@ class Diary:
         return f'{salt}, {password_hash}'
 
     @password.setter
-    def password(self, value):
+    def password(self, value: str):
         self.__password = hash_new_password(value)
 
     def add_record(self, date: str,text: str):

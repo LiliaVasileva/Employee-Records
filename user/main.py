@@ -3,25 +3,8 @@ import os
 import hashlib
 import hmac
 import json
+from password.password import  hash_new_password
 
-def hash_new_password(password):
-    """
-    Hash the provided password with a randomly-generated salt and return the
-    salt and hash to store in the database.
-    """
-    salt = os.urandom(16)
-    password_hash = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
-    return salt, password_hash
-
-def is_correct_password(salt, password_hash, password):
-    """
-    Given a previously-stored salt and hash, and a password provided by a user
-    trying to log in, check whether the password is correct.
-    """
-    return hmac.compare_digest(
-        password_hash,
-        hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
-    )
 
 class SaveUser:
     def save_user(self):
@@ -47,17 +30,16 @@ class EditUser:
             return
         with open(f'data/{self.username}.json', "r+") as f:
             data = json.load(f)
-        if value == 'username':
-            data[value] = self.username
-            os.rename(f, self.username)
-        elif value == 'password':
+        if value == 'password':
             data[value] = self.password
         elif value == 'salary':
+            print(self.salary)
             data[value] = self.salary
         elif value == 'email':
             data[value] = self.email
         with open(f'data/{self.username}.json', "r+") as f:
             json.dump(data ,f, indent=4)
+
 
 class DeleteUser:
     def delete(self):
@@ -79,7 +61,6 @@ class User(SaveUser, EditUser, DeleteUser):
     @username.setter
     def username(self, value):
         self.__username = value
-        self.edit_user('username')
 
     @property
     def password(self):
@@ -91,25 +72,41 @@ class User(SaveUser, EditUser, DeleteUser):
         self.__password = hash_new_password(value)
         self.edit_user('password')
 
+    @property
+    def salary(self):
+        return self.__salary
+
+    @salary.setter
+    def salary(self, value):
+        self.__salary = value
+        self.edit_user('salary')
 
     @property
-    def password(self):
-        salt, password_hash = self.__password
-        return f'{salt}, {password_hash}'
+    def email(self):
+        return self.__email
 
-    @password.setter
-    def password(self, value):
-        self.__password = hash_new_password(value)
-        self.edit_user('password')
-
+    @email.setter
+    def email(self, value):
+        self.__email = value
+        self.edit_user('email')
 
     def __str__(self):
         return f"Username: {self.username},Password: {self.password}, Salary: {self.salary}$, Email: {self.email} "
 
 
+# TEST Code
+# Creating test_user to test instantiation of the class
+test_user = User('Test', 'monkey', 100, 'test.testov@gmail.com')
+#Saving file with test_user username as a name of the file in folder called data
+test_user.save_user()
+# Creating second user to test instantiation of the class
+test_user_second = User('Testov', 'chocolate', 200, 'testov.test.com')
+#Saving file with test_user username as a name of the file in folder called data
+test_user_second.save_user()
+# Test when instance atribute is changed if the file is updating the information for the user
+test_user_second.salary = 1000
+# Test __str__ method returs the correct information for the instance of the class
+print(test_user_second)
+# Test deleting the instance of the class
+test_user_second.delete()
 
-my_user = User('Test', 'monkey', 300, 'lilia.vvasileva@gmail.com')
-
-my_user.save_user()
-my_user2 = User('Vasilev', 'chocolate', 300, 'kamen.vvasileva@gmail.com')
-my_user2.save_user()
