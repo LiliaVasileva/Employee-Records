@@ -10,18 +10,15 @@ class SaveUser:
     def save_user(self):
         path = f'data/{self.username}.json'
         if not os.path.isfile(path):
-            file = open(f'data/{self.username}.json', "x")
-            data = {
-                'username': self.username,
-                'password': self.password,
-                'salary': self.salary,
-                'email': self.email,
-            }
-            with open(f'data/{self.username}.json', "w") as f:
-                json.dump(data ,f, indent=4)
-        else:
-            pass
-
+            with open(path, "x") as file:
+                data = {
+                    'username': self.username,
+                    'password': self.password,
+                    'salary': self.salary,
+                    'email': self.email,
+                }
+                json.dump(data ,file, indent=4)
+                file.close()
 
 class EditUser:
     def edit_user(self,value):
@@ -107,5 +104,5 @@ test_user_second.salary = 1000
 # Test __str__ method returs the correct information for the instance of the class
 print(test_user_second)
 # Test deleting the instance of the class
-test_user_second.delete()
+# test_user_second.delete()
 
